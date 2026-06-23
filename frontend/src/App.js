@@ -29,6 +29,8 @@ import ContactUs from './screens/ContactUs';
 import StudentProfile from './screens/StudentProfile';
 import Logout from './components/Logout';
 import HostelOwnerBookingBed from './components/hostelBooking/HostelOwnerbookingBed';
+import AdminLogin from './components/admin/AdminLogin';
+import AdminDashboard from './components/admin/AdminDashboard';
 
 function App() {
   return (
@@ -66,6 +68,10 @@ function App() {
        <Route path='/booking' element={<HostelOwnerBookingBed/>}/>
        <Route path='/ContactUs' element={<ContactUs/>}/>
        <Route path='/kitchenownerdashboard' element={<KitchenOwnerDashboard/>}/>
+
+       {/* Admin Routes */}
+       <Route path='/admin/login' element={<AdminLogin/>}/>
+       <Route path='/admin/dashboard' element={<AdminDashboard/>}/>
       </Routes>
     </Router>
     </div>

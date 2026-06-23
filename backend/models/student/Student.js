@@ -24,6 +24,11 @@ const studentSchema = new mongoose.Schema({
     verification_token_time: { type: Date, required: false },
     reset_password_token: { type: String, required: false },
     reset_password_token_time: { type: Date, required: false },
+
+    // Admin control fields
+    isBanned: { type: Boolean, default: false },
+    status: { type: String, default: 'active', enum: ['active', 'banned'] },
+
     role: { type: String, default: 'student', enum: ['student'], required: true }
 }, { timestamps: true });
 

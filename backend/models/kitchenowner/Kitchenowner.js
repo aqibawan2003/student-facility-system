@@ -34,6 +34,11 @@ const kitchenOwnerSchema = new mongoose.Schema({
     reset_password_token: { type: String, required: false }, // Token for password reset
     reset_password_token_time: { type: Date, required: false }, // Time when the reset password token was generated
 
+    // Admin approval fields
+    isApproved: { type: Boolean, default: false },
+    isBanned: { type: Boolean, default: false },
+    status: { type: String, default: 'pending', enum: ['pending', 'active', 'banned'] },
+
     // Role and Access
     role: { type: String, default: 'kitchenOwner', enum: ['kitchenOwner'], required: true }, // Role of the user
 

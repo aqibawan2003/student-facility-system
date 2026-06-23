@@ -45,6 +45,11 @@ const hostelOwnerSchema = new mongoose.Schema({
 
     stripeAccountId: { type: String, default: '' },
 
+    // Admin approval fields
+    isApproved: { type: Boolean, default: false },
+    isBanned: { type: Boolean, default: false },
+    status: { type: String, default: 'pending', enum: ['pending', 'active', 'banned'] },
+
     role: { type: String, default: 'hostelOwner', enum: ['hostelOwner'], required: true },
     rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Room' }]
 }, { timestamps: true });
