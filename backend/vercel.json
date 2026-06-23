@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
+    }
+  ],
+  "env": {
+    "MONGODB_URI": "@mongodb_uri",
+    "JWT_SECRET": "@jwt_secret",
+    "EMAIL": "@email",
+    "APP_PASSWORD": "@app_password",
+    "STRIPE_SECRET_KEY2": "@stripe_secret_key2",
+    "STRIPE_SECRET_KEY_ORDER": "@stripe_secret_key_order"
+  }
+}
