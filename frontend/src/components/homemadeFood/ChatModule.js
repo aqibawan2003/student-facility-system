@@ -1,0 +1,113 @@
+import React, { useState, useEffect } from 'react';
+import io from 'socket.io-client';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+
+const ChatModule = ({ orderId, kitchenId, orderStatus }) => { // Add orderStatus as a prop
+  const [socket, setSocket] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const userId = JSON.parse(atob(Cookies.get('token').split('.')[1])).id;
+
+  useEffect(() => {
+    // Initialize socket connection
+    const newSocket = io('http://localhost:5000', {
+      transports: ['websocket'],
+      withCredentials: true,
+    });
+    setSocket(newSocket);
+
+    // Join order-specific chat room
+    newSocket.emit('joinOrderRoom', { orderId });
+
+    // Fetch chat history from the backend
+    axios.get(`http://localhost:5000/api/chats/${orderId}`).then((res) => {
+      setMessages(res.data);
+    });
+
+    // Listen for new incoming messages
+    newSocket.on('receiveMessage', (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    // Cleanup when component unmounts
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [orderId]);
+
+  const handleSendMessage = async () => {
+    if (newMessage.trim() === '') return;
+
+    const messageData = {
+      orderId,
+      userId,
+      kitchenId,
+      message: newMessage,
+      timestamp: new Date().toISOString() // Set the timestamp locally
+    };
+
+    try {
+      // Emit message to server via socket
+      socket.emit('sendMessage', messageData);
+
+      // Optimistically add the message to the chat (before posting to the server)
+      setMessages((prevMessages) => [...prevMessages, messageData]);
+
+      // Clear input field
+      setNewMessage('');
+    } catch (error) {
+      console.error('Failed to send message:', error);
+    }
+  };
+
+  const getSenderLabel = (msgUserId) => {
+    if (msgUserId === userId) {
+      return "You";
+    } else if (msgUserId === kitchenId) {
+      return "Chef";
+    } else {
+      return "Customer";
+    }
+  };
+
+  // Check if the order is completed and disable the chat
+  const isOrderCompleted = orderStatus === 'Completed';
+
+  return (
+    <div className="chat-container p-1">
+      <div className="messages bg-[#25292e] rounded h-64 p-2 overflow-y-scroll">
+        {messages.map((message, index) => (
+          <div key={index} className="message p-1 border rounded m-1 shadow">
+            <span className="font-bold">{getSenderLabel(message.userId)}: </span>
+            <span>{message.message}</span>
+            <p className='text-xs'>{new Date(message.timestamp).toLocaleString()}</p>
+          </div>
+        ))}
+      </div>
+      {/* Disable the input field and send button when the order is completed */}
+      {!isOrderCompleted && (
+        <div className="mt-2 flex">
+          <input
+            type="text"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            className="border text-black flex-grow p-2"
+            placeholder="Type your message"
+          />
+          <button
+            onClick={handleSendMessage}
+            className="bg-blue-500 text-white p-2"
+          >
+            Send
+          </button>
+        </div>
+      )}
+      {isOrderCompleted && (
+        <div className="text-red-500 pt-12 text-center">Chat is disabled for completed orders.</div>
+      )}
+    </div>
+  );
+};
+
+export default ChatModule;

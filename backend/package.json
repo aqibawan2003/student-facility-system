@@ -1,0 +1,37 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest --detectOpenHandles --forceExit",
+    "start": "nodemon server.js",
+    "seed": "node seed.js"
+  },
+  "author": "AQIB AWAN",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "express-validator": "^7.1.0",
+    "geolib": "^3.3.4",
+    "jsonwebtoken": "^9.0.2",
+    "mailgun-js": "^0.22.0",
+    "mongoose": "^8.5.0",
+    "nodemailer": "^6.9.14",
+    "openai": "^4.67.0",
+    "socket.io": "^4.7.5",
+    "strip": "^3.0.0",
+    "stripe": "^16.9.0",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "nodemon": "^3.1.7",
+    "supertest": "^7.2.2"
+  }
+}
